@@ -1,20 +1,17 @@
-# Use official Python 3.12 image
+# Use an official Python runtime as a parent image
 FROM python:3.12-slim
-
-# Install OpenCV and dependencies
-RUN apt-get update && apt-get install -y python3-opencv libgl1-mesa-glx
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container
+# Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install required Python packages
+# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the default port for Streamlit
+# Expose port 8501 for the Streamlit app
 EXPOSE 8501
 
-# Run the Streamlit app
-CMD ["streamlit", "run", "app.py", "--server.headless", "true"]
+# Run streamlit when the container launches
+CMD ["streamlit", "run", "app.py", "--server.enableCORS=false", "--server.enableXsrfProtection=false"]
