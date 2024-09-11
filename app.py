@@ -46,4 +46,3 @@ if st.button('Capture Image'):
         st.image(file_path, caption='Captured Image', use_column_width=True)
     else:
         st.error("No image to capture. Please start the webcam.")
-
