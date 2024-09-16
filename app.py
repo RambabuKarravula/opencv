@@ -13,32 +13,22 @@ def main():
     # Initialize a placeholder for the captured image
     captured_image = st.empty()
 
-    # WebRTC streamer configuration with error handling for NoneType
     webrtc_ctx = webrtc_streamer(
         key="webcam",
         video_frame_callback=video_frame_callback,
-        rtc_configuration={
-            "iceServers": [
-                {"urls": ["stun:stun.l.google.com:19302"]}  # Google's public STUN server
-            ]
-        },
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
         media_stream_constraints={"video": True, "audio": False},
     )
 
-    # Check if the context is properly initialized
-    if webrtc_ctx.state.playing and webrtc_ctx.video_receiver:
-        st.write("Webcam is live. Click 'Capture Image' to take a snapshot.")
+    if st.button("Capture Image"):
+        if webrtc_ctx.video_receiver:
+            image = webrtc_ctx.video_receiver.get_frame().to_ndarray(format="bgr24")
+            captured_image.image(image, channels="BGR", caption="Captured Image")
+            # You can add code here to save the image if needed
 
-        # Capture the image when the button is clicked
-        if st.button("Capture Image"):
-            try:
-                # Get the current video frame as an image
-                image = webrtc_ctx.video_receiver.get_frame().to_ndarray(format="bgr24")
-                captured_image.image(image, channels="BGR", caption="Captured Image")
-            except Exception as e:
-                st.error(f"Error capturing image: {e}")
-    else:
-        st.warning("Webcam is not ready. Please check your network or STUN configuration.")
+    # Display the video feed continuously until an image is captured
+    if webrtc_ctx.state.playing:
+        st.write("Webcam is live. Click 'Capture Image' to take a snapshot.")
 
 if __name__ == "__main__":
     main()
