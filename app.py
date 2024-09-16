@@ -16,7 +16,14 @@ def main():
     webrtc_ctx = webrtc_streamer(
         key="webcam",
         video_frame_callback=video_frame_callback,
-        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        rtc_configuration={
+            "iceServers": [
+                {"urls": ["stun:stun.l.google.com:19302"]},
+                {"urls": ["stun:stun.services.mozilla.com"]},
+                {"urls": ["stun:stun.stunprotocol.org:3478"]},
+                {"urls": ["stun:global.stun.twilio.com:3478"]}
+            ]
+        },
         media_stream_constraints={"video": True, "audio": False},
     )
 
